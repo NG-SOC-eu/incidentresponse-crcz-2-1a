@@ -91,6 +91,15 @@
     loop_var: dashboard
   notify: restart grafana
 
+- name: Apply pending Grafana restarts before health checks
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure Grafana service is enabled and started after provisioning
+  ansible.builtin.service:
+    name: "{{ reporting_workspace_grafana_service }}"
+    enabled: true
+    state: started
+
 - name: Wait for Grafana service port to become available
   ansible.builtin.wait_for:
     host: 127.0.0.1
