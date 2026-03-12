@@ -45,7 +45,7 @@
     src: grafana.ini.j2
     dest: "{{ reporting_workspace_grafana_ini }}"
     owner: root
-    group: root
+    group: grafana
     mode: "0640"
   notify: restart grafana
 
