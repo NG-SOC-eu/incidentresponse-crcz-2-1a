@@ -60,6 +60,6 @@
     - role: instructor-console
 
 - name: Stage trainee lab resources
-  hosts: trainees
+  hosts: trainee-workstation-01, trainee-workstation-02
   roles:
     - role: trainee-workstation
