@@ -5,7 +5,6 @@
     name: fDenyTSConnections
     data: 0
     type: dword
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Allow RDP through Firewall
   community.windows.win_firewall_rule:
@@ -16,7 +15,6 @@
     action: allow
     direction: in
     protocol: tcp
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: (Optional) Disable NLA for easier access
   ansible.windows.win_regedit:
@@ -24,4 +22,3 @@
     name: UserAuthentication
     data: 0
     type: dword
-  when: ansible_facts.os_family | default('') == 'Windows'
