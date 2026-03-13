@@ -1,33 +1,5 @@
 ---
 - name: restart grafana
-  block:
-    - name: Restart Grafana service
-      ansible.builtin.service:
-        name: "{{ reporting_workspace_grafana_service }}"
-        state: restarted
-
-  rescue:
-    - name: Read Grafana service status
-      ansible.builtin.command:
-        cmd: systemctl status {{ reporting_workspace_grafana_service }} --no-pager
-      register: grafana_status
-      changed_when: false
-      failed_when: false
-
-    - name: Read Grafana journal
-      ansible.builtin.command:
-        cmd: journalctl -u {{ reporting_workspace_grafana_service }} -n 100 --no-pager
-      register: grafana_journal
-      changed_when: false
-      failed_when: false
-
-    - name: Fail with Grafana diagnostics
-      ansible.builtin.fail:
-        msg: |-
-          Unable to restart Grafana.
-
-          systemctl status:
-          {{ grafana_status.stdout | default('') }}
-
-          journalctl:
-          {{ grafana_journal.stdout | default('') }}
+  ansible.builtin.service:
+    name: "{{ reporting_workspace_grafana_service }}"
+    state: restarted
