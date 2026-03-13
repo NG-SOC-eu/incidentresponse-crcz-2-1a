@@ -63,4 +63,4 @@
   hosts: trainee-workstation-01, trainee-workstation-02
   roles:
     - role: windows
-    - role: trainee-workstation
+#    - role: trainee-workstation
