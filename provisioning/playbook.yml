@@ -61,6 +61,15 @@
 
 - name: Stage trainee lab resources
   hosts: trainee-workstation-01, trainee-workstation-02
+  gather_facts: false
+
   roles:
     - role: windows
-    - role: trainee-workstation
+
+  tasks:
+    - name: Gather Windows facts explicitly after windows role
+      ansible.windows.setup:
+
+    - name: Run trainee workstation role after explicit facts gathering
+      ansible.builtin.include_role:
+        name: trainee-workstation
