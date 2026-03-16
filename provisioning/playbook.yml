@@ -1,6 +1,5 @@
 ---
 - name: Configure Windows
   hosts: trainee-workstation-01, trainee-workstation-02
-  become: yes
   roles:
     - windows
