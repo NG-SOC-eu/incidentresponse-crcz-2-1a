@@ -19,7 +19,6 @@ routers:
       mgmt_user: debian
     flavor: standard.small
 networks:
-    accessible_by_user: False
   - name: rep-frontend
     cidr: 10.20.20.0/24
     accessible_by_user: True
