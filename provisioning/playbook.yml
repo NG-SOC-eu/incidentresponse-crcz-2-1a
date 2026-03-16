@@ -41,35 +41,8 @@
           install required collections before executing this playbook directly.
         success_msg: ansible.windows collection is available.
 
-- name: Configure REP core services
-  hosts: rep-scheduler, rep-live-session, rep-quiz-engine, rep-practical-labs
-  become: true
-  roles:
-    - role: rep-core
-
-- name: Prepare the reporting workspace analytics stack
-  hosts: reporting-workspace
-  become: true
-  roles:
-    - role: reporting-workspace
-
-- name: Personalise the instructor console
-  hosts: instructor-console
-  become: true
-  roles:
-    - role: instructor-console
-
-- name: Stage trainee lab resources
+- name: Configure Kali
   hosts: trainee-workstation-01, trainee-workstation-02
-  gather_facts: false
-
+  become: yes
   roles:
-    - role: windows
-
-  tasks:
-    - name: Gather Windows facts explicitly after windows role
-      ansible.windows.setup:
-
-    - name: Run trainee workstation role after explicit facts gathering
-      ansible.builtin.include_role:
-        name: trainee-workstation
+    - windows
