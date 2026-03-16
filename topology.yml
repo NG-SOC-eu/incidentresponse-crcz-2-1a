@@ -2,13 +2,13 @@ name: lm8-subcase-1a-widnows
 hosts:
   - name: trainee-workstation-01
     base_box:
-      image: windows10
+      image: Windows10
       mgmt_user: windows
       mgmt_protocol: winrm
     flavor: standard.medium
   - name: trainee-workstation-02
     base_box:
-      image: windows10
+      image: Windows10
       mgmt_user: windows
       mgmt_protocol: winrm
     flavor: standard.medium
