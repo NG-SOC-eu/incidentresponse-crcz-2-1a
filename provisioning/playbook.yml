@@ -3,4 +3,3 @@
   hosts: trainee-workstation-01, trainee-workstation-02
   roles:
     - windows
-    - trainee-workstation
