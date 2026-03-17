@@ -1,4 +1,4 @@
-name: lm8-subcase-1a-widnows
+name: widnows
 hosts:
   - name: trainee-workstation-01
     base_box:
