@@ -22,3 +22,34 @@
     name: UserAuthentication
     data: 0
     type: dword
+
+- name: Force Network Profile to Private
+  ansible.windows.win_shell: |
+    Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
+  register: network_profile_result
+  changed_when: "'Private' not in network_profile_result.stdout"
+
+- name: Enable Remote Desktop (RDP)
+  ansible.windows.win_regedit:
+    path: HKLM:\System\CurrentControlSet\Control\Terminal Server
+    name: fDenyTSConnections
+    data: 0
+    type: dword
+
+- name: Disable Network Level Authentication (NLA) for easier GUI access
+  ansible.windows.win_regedit:
+    path: HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp
+    name: UserAuthentication
+    data: 0
+    type: dword
+
+- name: Ensure Firewall allows RDP and WinRM
+  ansible.windows.win_shell: |
+    Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    Enable-NetFirewallRule -DisplayGroup "Windows Remote Management"
+  ignore_errors: true
+
+- name: (Optional) Completely Disable Firewall for Lab Environment
+  ansible.windows.win_shell: |
+    Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+  when: trainee_workstation_disable_firewall | default(false)
