@@ -61,7 +61,7 @@
 
 - name: Stage trainee lab resources
   hosts: trainee-workstation-01, trainee-workstation-02
-  become: yes
+  gather_facts: no
   roles:
     - windows
 
