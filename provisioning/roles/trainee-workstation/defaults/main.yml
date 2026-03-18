@@ -44,6 +44,7 @@ trainee_workstation_health_command: "Get-Service -Name {{ trainee_workstation_co
 trainee_workstation_welcome_note:
   directory: C:\Labs
   filename: WELCOME.txt
+  path: C:\Labs\WELCOME.txt
   content: |
     Welcome to the Random Education Platform lab environment.
     Follow your instructor's guidance to complete the phishing awareness exercises.
