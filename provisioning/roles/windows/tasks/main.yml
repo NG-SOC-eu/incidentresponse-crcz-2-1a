@@ -40,3 +40,11 @@
 #      - Domain
 #      - Private
 #      - Public
+
+- name: Change Windows User Password
+  ansible.windows.win_user:
+    name: windows
+    password: "qwerty!23"
+    state: present
+    password_never_expires: yes
+    update_password: always
