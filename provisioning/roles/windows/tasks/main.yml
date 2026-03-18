@@ -1,7 +1,12 @@
 ---
 - name: Set Network Profile to Private
-  community.windows.win_current_user_network_profile:
-    network_category: Private
+  ansible.windows.win_shell: |
+    $Profile = Get-NetConnectionProfile
+    if ($Profile.NetworkCategory -ne 'Private') {
+        Set-NetConnectionProfile -NetworkCategory Private
+    }
+  register: profile_change
+  changed_when: profile_change.stdout != ""
 
 - name: Enable Remote Desktop (RDP)
   ansible.windows.win_regedit:
