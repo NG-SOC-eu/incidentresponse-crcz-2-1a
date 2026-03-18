@@ -1,24 +1,50 @@
 ---
-- name: Enable Remote Desktop (RDP)
+- name: Set Network Profile to Private
+  ansible.windows.win_shell: |
+    $Profile = Get-NetConnectionProfile
+    if ($Profile.NetworkCategory -ne 'Private') {
+        Set-NetConnectionProfile -NetworkCategory Private
+    }
+  register: profile_change
+  changed_when: profile_change.stdout != ""
+
+- name: Enable RDP & Disable NLA (Registry)
   ansible.windows.win_regedit:
-    path: HKLM:\System\CurrentControlSet\Control\Terminal Server
-    name: fDenyTSConnections
+    path: "{{ item.path }}"
+    name: "{{ item.name }}"
     data: 0
     type: dword
+  loop:
+    - { path: 'HKLM:\System\CurrentControlSet\Control\Terminal Server', name: 'fDenyTSConnections' }
+    - { path: 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp', name: 'UserAuthentication' }
 
-- name: Allow RDP through Firewall
+- name: Allow Ping (ICMP) - This fixes your "Cannot Ping" issue
   community.windows.win_firewall_rule:
-    name: Remote Desktop - User Mode (TCP-In)
-    enabled: yes
-    state: present
-    localport: 3389
+    name: Allow ICMPv4-In
+    protocol: icmpv4
     action: allow
     direction: in
-    protocol: tcp
+    enabled: yes
+    state: present
 
-- name: (Optional) Disable NLA for easier access
-  ansible.windows.win_regedit:
-    path: HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp
-    name: UserAuthentication
-    data: 0
-    type: dword
+- name: Ensure Firewall allows RDP and WinRM
+  ansible.windows.win_shell: |
+    Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    Enable-NetFirewallRule -DisplayGroup "Windows Remote Management"
+  ignore_errors: true
+
+#- name: Completely Disable Firewall for Lab Environment
+#  community.windows.win_firewall:
+#    state: disabled
+#    profiles:
+#      - Domain
+#      - Private
+#      - Public
+
+- name: Change Windows User Password
+  ansible.windows.win_user:
+    name: windows
+    password: "qwerty!23"
+    state: present
+    password_never_expires: yes
+    update_password: always
