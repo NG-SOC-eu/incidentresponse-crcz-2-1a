@@ -1,6 +1,7 @@
 ---
 - name: Configure Windows
   hosts: trainee-workstation-01, trainee-workstation-02
+  gather_facts: no
   vars_files:
     - ../group_vars/trainees.yml
   roles:
