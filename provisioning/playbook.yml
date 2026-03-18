@@ -59,15 +59,16 @@
   roles:
     - role: instructor-console
 
-- name: Configure Windows
+- name: Configure Windows Basic
   hosts: trainee-workstation-01, trainee-workstation-02
   gather_facts: no
   roles:
     - windows
 
-  tasks:
-    - name: Gather Windows facts explicitly after windows role
-      ansible.windows.setup:
-    - name: Run trainee workstation role after explicit facts gathering
-      ansible.builtin.include_role:
-        name: trainee-workstation
+- name: Configure Windows trainee-workstation
+  hosts: trainee-workstation-01, trainee-workstation-02
+  gather_facts: no
+  vars_files:
+    - ../group_vars/trainees.yml
+  roles:
+    - trainee-workstation
