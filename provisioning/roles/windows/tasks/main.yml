@@ -1,5 +1,5 @@
 ---
-- name: Force Network Profile to Private
+- name: Set Network Profile to Private
   community.windows.win_current_user_network_profile:
     network_category: Private
 
