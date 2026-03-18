@@ -29,9 +29,9 @@
   when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Deploy trainee welcome note
-  ansible.windows.win_copy:
-    dest: "{{ trainee_workstation_welcome_note.path | default(trainee_workstation_welcome_note.directory ~ '\\' ~ trainee_workstation_welcome_note.filename) }}"
-    content: "{{ trainee_workstation_welcome_note.content }}"
+  ansible.windows.win_template:
+    src: welcome_note.txt.j2
+    dest: "{{ trainee_workstation_welcome_note.path }}"
   when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Deploy collector configuration
