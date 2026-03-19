@@ -9,9 +9,6 @@
   register: profile_change
   changed_when: profile_change.stdout != ""
 
-
-############## Necessary for not rebooting or shuting down
-
 - name: Completely Disable Firewall for Lab Environment
   community.windows.win_firewall:
     state: disabled
@@ -19,6 +16,8 @@
       - Domain
       - Private
       - Public
+
+############## Necessary for not rebooting or shuting down
 
 - name: Stop and disable wuauserv service
   ansible.windows.win_service:
