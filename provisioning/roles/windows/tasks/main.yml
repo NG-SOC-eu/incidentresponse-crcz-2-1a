@@ -41,6 +41,19 @@
     Enable-NetFirewallRule -DisplayGroup "Windows Remote Management"
   ignore_errors: true
 
+#- name: Open Firewall Ports Explicitly (WinRM & RDP)
+#  community.windows.win_firewall_rule:
+#    name: "Ansible-{{ item.name }}"
+#    localport: "{{ item.port }}"
+#    action: allow
+#    direction: in
+#    protocol: tcp
+#    state: present
+#  loop:
+#    - { name: 'WinRM-HTTP', port: '5985' }
+#    - { name: 'WinRM-HTTPS', port: '5986' }
+#    - { name: 'RDP', port: '3389' }
+
 - name: Change Windows User Password
   ansible.windows.win_user:
     name: windows
