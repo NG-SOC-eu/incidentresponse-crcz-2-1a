@@ -9,6 +9,16 @@
   register: profile_change
   changed_when: profile_change.stdout != ""
 
+- name: Enable RDP & Disable NLA (Registry)
+  ansible.windows.win_regedit:
+    path: "{{ item.path }}"
+    name: "{{ item.name }}"
+    data: 0
+    type: dword
+  loop:
+    - { path: 'HKLM:\System\CurrentControlSet\Control\Terminal Server', name: 'fDenyTSConnections' }
+    - { path: 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp', name: 'UserAuthentication' }
+
 - name: Completely Disable Firewall for Lab Environment
   community.windows.win_firewall:
     state: disabled
