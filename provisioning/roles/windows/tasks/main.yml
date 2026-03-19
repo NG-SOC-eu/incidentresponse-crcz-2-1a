@@ -33,17 +33,18 @@
   register: rearm_attempt
   ignore_errors: yes
 
-- name: Disable Software Protection Service (License Checks)
-  ansible.windows.win_service:
-    name: sppsvc
-    start_mode: disabled
-  ignore_errors: yes
+- name: Force Disable sppsvc via Registry
+  ansible.windows.win_regedit:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\sppsvc
+    name: Start
+    data: 4
+    type: dword
+    state: present
 
-- name: Disable Hourly Shutdown Task (Software Protection Platform)
-  community.windows.win_scheduled_task:
-    name: 'SvcRestartTask'
-    path: '\Microsoft\Windows\Software Protection Platform'
-    enabled: false
+- name: Disable License Shutdown Tasks (Hourly Shutdown Task - Software Protection Platform)
+  ansible.windows.win_shell: |
+    schtasks /change /tn "\Microsoft\Windows\Software Protection Platform\SvcRestartTask" /disable
+    schtasks /change /tn "\Microsoft\Windows\Software Protection Platform\SvcRestartTaskLogon" /disable
   ignore_errors: yes
 
 - name: Disable Automatic Reboot for Updates via Registry
