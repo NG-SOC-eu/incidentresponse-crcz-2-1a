@@ -1,4 +1,4 @@
-name: widnows
+name: widnows-old
 hosts:
   - name: trainee-workstation-01
     base_box:
