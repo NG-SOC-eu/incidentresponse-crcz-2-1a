@@ -16,6 +16,12 @@
 #  register: profile_change
 #  changed_when: profile_change.stdout != ""
 
+- name: Stop and disable wuauserv service
+  ansible.windows.win_service:
+    name: wuauserv
+    state: stopped
+    start_mode: disabled
+
 - name: Enable RDP & Disable NLA (Registry)
   ansible.windows.win_regedit:
     path: "{{ item.path }}"
