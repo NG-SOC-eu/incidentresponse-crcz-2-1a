@@ -24,6 +24,15 @@
     state: stopped
     start_mode: disabled
 
+############ Rearm Licence. Might not work ###############
+- name: Rearm and refresh Software Protection Service
+  ansible.windows.win_shell: |
+    slmgr.vbs /rearm
+    Start-Sleep -Seconds 5
+    Restart-Service sppsvc -Force
+  register: rearm_attempt
+  ignore_errors: yes
+
 - name: Disable Software Protection Service (License Checks)
   ansible.windows.win_service:
     name: sppsvc
@@ -44,16 +53,6 @@
     data: 1
     type: dword
     state: present
-
-###################### Rearm Licence. Might not work
-
-- name: Rearm and refresh Software Protection Service
-  ansible.windows.win_shell: |
-    slmgr.vbs /rearm
-    Start-Sleep -Seconds 5
-    Restart-Service sppsvc -Force
-  register: rearm_attempt
-  ignore_errors: yes
 
 ############ Necessary for Access
 
