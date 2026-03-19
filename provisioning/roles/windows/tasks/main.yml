@@ -1,4 +1,5 @@
 ---
+######### Necessary for Access
 - name: Set Network Profile to Private
   ansible.windows.win_shell: |
     $Profile = Get-NetConnectionProfile
@@ -7,6 +8,9 @@
     }
   register: profile_change
   changed_when: profile_change.stdout != ""
+
+
+############## Necessary for not rebooting or shuting down
 
 - name: Completely Disable Firewall for Lab Environment
   community.windows.win_firewall:
@@ -42,6 +46,8 @@
     data: 1
     type: dword
     state: present
+
+###################### Necessary for Access
 
 - name: Enable RDP & Disable NLA (Registry)
   ansible.windows.win_regedit:
