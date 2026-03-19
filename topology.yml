@@ -1,14 +1,8 @@
-name: widnows
+name: winserver
 hosts:
-  - name: trainee-workstation-01
+  - name: win-server
     base_box:
-      image: win10
-      mgmt_user: windows
-      mgmt_protocol: winrm
-    flavor: standard.medium
-  - name: trainee-workstation-02
-    base_box:
-      image: win10
+      image: windows-server-2019
       mgmt_user: windows
       mgmt_protocol: winrm
     flavor: standard.medium
@@ -23,12 +17,9 @@ networks:
     cidr: 10.20.20.0/24
     accessible_by_user: True
 net_mappings:
-  - host: trainee-workstation-01
+  - host: win-server
     network: rep-frontend
     ip: 10.20.20.50
-  - host: trainee-workstation-02
-    network: rep-frontend
-    ip: 10.20.20.60
 router_mappings:
   - router: rep-gateway
     network: rep-frontend
