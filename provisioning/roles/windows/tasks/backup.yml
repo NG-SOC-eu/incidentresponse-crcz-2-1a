@@ -1,5 +1,5 @@
 ---
-# 1. NETWORK & ACCESS (Do this first so you don't lose connection)
+# 1. NETWORK & ACCESS
 - name: Set Network Profile to Private
   ansible.windows.win_shell: |
     $Profile = Get-NetConnectionProfile
@@ -24,7 +24,7 @@
     state: disabled
     profiles: [Domain, Private, Public]
 
-# 2. ANTI-SHUTDOWN MEASURES
+# 2. Necessary for not rebooting or shuting down
 - name: Stop and disable Windows Update
   ansible.windows.win_service:
     name: wuauserv
