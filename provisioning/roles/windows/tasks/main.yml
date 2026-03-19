@@ -55,6 +55,10 @@
     type: dword
     state: present
 
+- name: Abort any pending shutdowns
+  ansible.windows.win_shell: shutdown /a
+  ignore_errors: yes
+
 ############ Necessary for Access
 
 - name: Enable RDP & Disable NLA (Registry)
