@@ -41,6 +41,13 @@
           install required collections before executing this playbook directly.
         success_msg: ansible.windows collection is available.
 
+###### Run Windows Basic Config First
+- name: Configure Windows Basic
+  hosts: trainee-workstation-01, trainee-workstation-02
+  gather_facts: no
+  roles:
+    - windows
+
 - name: Configure REP core services
   hosts: rep-scheduler, rep-live-session, rep-quiz-engine, rep-practical-labs
   become: true
@@ -59,11 +66,11 @@
   roles:
     - role: instructor-console
 
-- name: Configure Windows Basic
-  hosts: trainee-workstation-01, trainee-workstation-02
-  gather_facts: no
-  roles:
-    - windows
+#- name: Configure Windows Basic
+#  hosts: trainee-workstation-01, trainee-workstation-02
+#  gather_facts: no
+#  roles:
+#    - windows
 
 - name: Configure Windows trainee-workstation
   hosts: trainee-workstation-01, trainee-workstation-02
