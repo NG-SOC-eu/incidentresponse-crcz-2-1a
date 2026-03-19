@@ -5,7 +5,7 @@ hosts:
       image: windows-server-2019
       mgmt_user: windows
       mgmt_protocol: winrm
-    flavor: standard.medium
+    flavor: standard.xmedium
 routers:
   - name: rep-gateway
     base_box:
