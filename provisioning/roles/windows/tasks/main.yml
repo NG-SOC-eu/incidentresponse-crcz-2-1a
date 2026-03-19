@@ -16,14 +16,11 @@
       - Private
       - Public
 
-- name: Disable Windows Update Service
-  hosts: windows
-  tasks:
-    - name: Stop and disable wuauserv service
-      ansible.windows.win_service:
-        name: wuauserv
-        state: stopped
-        start_mode: disabled
+- name: Stop and disable wuauserv service
+  ansible.windows.win_service:
+    name: wuauserv
+    state: stopped
+    start_mode: disabled
 
 - name: Enable RDP & Disable NLA (Registry)
   ansible.windows.win_regedit:
