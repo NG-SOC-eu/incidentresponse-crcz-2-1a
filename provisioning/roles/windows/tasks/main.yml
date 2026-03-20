@@ -13,6 +13,42 @@
     state: stopped
   ignore_errors: yes
 
+#################### Defuse the Windows Evaluation Shutdowns
+
+- name: Create PS directory
+  ansible.windows.win_file:
+    path: C:\PS
+    state: directory
+
+- name: Download PsTools from Sysinternals
+  ansible.windows.win_get_url:
+    url: https://download.sysinternals.com/files/PSTools.zip
+    dest: C:\PS\PSTools.zip
+
+- name: Unzip PsTools
+  community.windows.win_unzip:
+    src: C:\PS\PSTools.zip
+    dest: C:\PS\
+    creates: C:\PS\psexec.exe
+
+- name: Delete WLMS Service via PsExec (SYSTEM privileges)
+  ansible.windows.win_shell: |
+    .\psexec.exe -accepteula -i -s sc delete WLMS
+  args:
+    chdir: C:\PS\
+  ignore_errors: yes
+
+- name: Force Delete WLMS Registry Key via PsExec
+  ansible.windows.win_shell: |
+    .\psexec.exe -accepteula -i -s reg delete "HKLM\SYSTEM\CurrentControlSet\Services\WLMS" /f
+  args:
+    chdir: C:\PS\
+  ignore_errors: yes
+
+- name: Final attempt to abort any active shutdown timers
+  ansible.windows.win_shell: shutdown /a
+  ignore_errors: yes
+
 ############## Network Access
 
 - name: Set Network Profile to Private
@@ -114,42 +150,6 @@
     state: present
 
 - name: Abort any pending shutdowns
-  ansible.windows.win_shell: shutdown /a
-  ignore_errors: yes
-
-#################### Retry to defuse the Windows Evaluation Shutdowns
-
-- name: Create PS directory
-  ansible.windows.win_file:
-    path: C:\PS
-    state: directory
-
-- name: Download PsTools from Sysinternals
-  ansible.windows.win_get_url:
-    url: https://download.sysinternals.com/files/PSTools.zip
-    dest: C:\PS\PSTools.zip
-
-- name: Unzip PsTools
-  community.windows.win_unzip:
-    src: C:\PS\PSTools.zip
-    dest: C:\PS\
-    creates: C:\PS\psexec.exe
-
-- name: Delete WLMS Service via PsExec (SYSTEM privileges)
-  ansible.windows.win_shell: |
-    .\psexec.exe -accepteula -i -s sc delete WLMS
-  args:
-    chdir: C:\PS\
-  ignore_errors: yes
-
-- name: Force Delete WLMS Registry Key via PsExec
-  ansible.windows.win_shell: |
-    .\psexec.exe -accepteula -i -s reg delete "HKLM\SYSTEM\CurrentControlSet\Services\WLMS" /f
-  args:
-    chdir: C:\PS\
-  ignore_errors: yes
-
-- name: Final attempt to abort any active shutdown timers
   ansible.windows.win_shell: shutdown /a
   ignore_errors: yes
 
