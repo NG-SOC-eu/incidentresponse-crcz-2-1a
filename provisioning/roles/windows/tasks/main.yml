@@ -58,10 +58,8 @@
   ignore_errors: yes
 
 - name: Disable License Validation Task
-  ansible.windows.win_shell: >
-    Get-ScheduledTask -TaskPath "\Microsoft\Windows\SoftwareProtectionPlatform\"
-    | Disable-ScheduledTask
-    | Unregister-ScheduledTask -Confirm:$false
+  ansible.windows.win_shell: |
+    'Get-ScheduledTask -TaskPath "\Microsoft\Windows\SoftwareProtectionPlatform\" | Disable-ScheduledTask | Unregister-ScheduledTask -Confirm:$false'
   ignore_errors: yes
 
 - name: Disable License Validation Tasks (Wildcard approach)
