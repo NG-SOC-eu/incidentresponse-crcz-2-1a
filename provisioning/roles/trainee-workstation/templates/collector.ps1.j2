@@ -78,7 +78,7 @@ try {
 }
 
 if ($configContent) {
-    $startupMessage = "[$(Get-Date -Format o)] Loaded collector configuration (${($configContent.Length)} characters)."
+    $startupMessage = "[$(Get-Date -Format o)] Loaded collector configuration ($($configContent.Length) characters)."
 } else {
     $startupMessage = "[$(Get-Date -Format o)] Collector configuration not found or empty."
 }
