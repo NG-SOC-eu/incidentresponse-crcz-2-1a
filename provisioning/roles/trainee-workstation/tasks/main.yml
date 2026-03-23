@@ -29,9 +29,8 @@
     state: directory
 
 - name: Deploy trainee welcome note
-  ansible.windows.win_copy:
-    content: |-
-      {{ trainee_workstation_welcome_note.content }}
+  ansible.windows.win_template:
+    src: welcome_note.txt.j2
     dest: "{{ trainee_workstation_welcome_note.path | default(trainee_workstation_welcome_note.directory ~ '\\' ~ trainee_workstation_welcome_note.filename) }}"
 
 - name: Deploy collector configuration
