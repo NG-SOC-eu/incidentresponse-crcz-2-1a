@@ -17,31 +17,26 @@
   ansible.windows.win_file:
     path: "{{ trainee_workstation_collector.directory }}"
     state: directory
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Ensure trainee labs directory exists
   ansible.windows.win_file:
     path: "{{ trainee_workstation_welcome_note.directory }}"
     state: directory
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Ensure collector script directory exists
   ansible.windows.win_file:
     path: "{{ trainee_workstation_collector_script_path | regex_replace('\\\\[^\\\\]+$', '') }}"
     state: directory
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Deploy trainee welcome note
   ansible.windows.win_copy:
     dest: "{{ trainee_workstation_welcome_note.path | default(trainee_workstation_welcome_note.directory ~ '\\' ~ trainee_workstation_welcome_note.filename) }}"
     content: "{{ trainee_workstation_welcome_note.content }}"
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Deploy collector configuration
   ansible.windows.win_template:
     src: collector.yaml.j2
     dest: "{{ trainee_workstation_collector.config_path }}"
-  when: ansible_facts.os_family | default('') == 'Windows'
   notify: restart rep collector
   no_log: true
 
@@ -49,7 +44,6 @@
   ansible.windows.win_template:
     src: collector.ps1.j2
     dest: "{{ trainee_workstation_collector_script_path }}"
-  when: ansible_facts.os_family | default('') == 'Windows'
   notify: restart rep collector
 
 - name: Determine collector service wrapper architecture
@@ -60,28 +54,23 @@
         if (trainee_workstation_service_wrapper_arch | default('') | lower) in ['win32', 'win64']
         else ('win64' if (ansible_processor_architecture | default(ansible_architecture | default('')) | lower | regex_search('amd64|x86_64|64')) else 'win32')
       }}
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Set collector service wrapper executable path
   ansible.builtin.set_fact:
     trainee_workstation_nssm_path: "{{ trainee_workstation_collector.service_wrapper.extract_path ~ '\\nssm-2.24\\' ~ trainee_workstation_nssm_arch ~ '\\nssm.exe' }}"
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Configure collector service wrapper executable path
   ansible.builtin.set_fact:
     trainee_workstation_collector: "{{ trainee_workstation_collector | combine({'service_wrapper': trainee_workstation_collector.service_wrapper | combine({'exe_path': trainee_workstation_nssm_path})}) }}"
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Determine collector service wrapper source type
   ansible.builtin.set_fact:
     trainee_workstation_service_wrapper_remote: "{{ trainee_workstation_collector.service_wrapper.url is match('^https?://') }}"
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Check for existing collector service wrapper archive
   ansible.windows.win_stat:
     path: "{{ trainee_workstation_collector.service_wrapper.archive_path }}"
   register: trainee_workstation_service_wrapper_archive
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Copy bundled collector service wrapper
   ansible.windows.win_copy:
@@ -89,7 +78,6 @@
     dest: "{{ trainee_workstation_collector.service_wrapper.archive_path }}"
     force: false
   when:
-    - ansible_facts.os_family | default('') == 'Windows'
     - not trainee_workstation_service_wrapper_remote
     - not trainee_workstation_service_wrapper_archive.stat.exists
 
@@ -99,7 +87,6 @@
     dest: "{{ trainee_workstation_collector.service_wrapper.archive_path }}"
     force: false
   when:
-    - ansible_facts.os_family | default('') == 'Windows'
     - trainee_workstation_service_wrapper_remote
     - not trainee_workstation_service_wrapper_archive.stat.exists
 
@@ -108,13 +95,11 @@
     src: "{{ trainee_workstation_collector.service_wrapper.archive_path }}"
     dest: "{{ trainee_workstation_collector.service_wrapper.extract_path }}"
     creates: "{{ trainee_workstation_nssm_path }}"
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Validate collector service wrapper extraction
   ansible.windows.win_stat:
     path: "{{ trainee_workstation_nssm_path }}"
   register: trainee_workstation_nssm_stat
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Fail when collector service wrapper is missing
   ansible.builtin.fail:
@@ -123,7 +108,6 @@
       Verify extraction of {{ trainee_workstation_collector.service_wrapper.archive_path }} from {{ trainee_workstation_collector.service_wrapper.url }}
       and adjust trainee_workstation_service_wrapper_arch if the host is 32-bit.
   when:
-    - ansible_facts.os_family | default('') == 'Windows'
     - not trainee_workstation_nssm_stat.stat.exists
 
 - name: Publish trainee shortcuts
@@ -133,7 +117,6 @@
   loop: "{{ trainee_workstation_shortcuts | list }}"
   loop_control:
     loop_var: shortcut
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Ensure collector log directories exist
   ansible.windows.win_file:
@@ -146,7 +129,6 @@
     ] | unique }}"
   loop_control:
     loop_var: log_dir
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Ensure collector service is running
   community.windows.win_nssm:
@@ -160,10 +142,8 @@
     app_restart_delay: 10000
     start_mode: auto
     state: started
-  when: ansible_facts.os_family | default('') == 'Windows'
 
 - name: Validate collector service status
-  when: ansible_facts.os_family | default('') == 'Windows'
   block:
     - block:
         - name: Ensure collector service is started
@@ -237,7 +217,6 @@
   rescue: *trainee_collector_diagnostics
 
 - name: Validate collector heartbeat
-  when: ansible_facts.os_family | default('') == 'Windows'
   block:
     - name: Check for collector log file
       ansible.windows.win_stat:
