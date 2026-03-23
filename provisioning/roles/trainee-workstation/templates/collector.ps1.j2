@@ -58,7 +58,7 @@ if (Test-Path -Path $configPath) {
     try {
         $configContent = Get-Content -Path $configPath -Raw
     } catch {
-        Write-Warning "Failed to read configuration file at $configPath: $($_.Exception.Message)"
+        Write-Warning "Failed to read configuration file at ${configPath}: $($_.Exception.Message)"
     }
 }
 
@@ -72,7 +72,7 @@ try {
     }
 } catch {
     $eventLogAvailable = $false
-    $eventLogWarning = "[$(Get-Date -Format o)] WARNING: Event log unavailable for source '$eventSource': $($_.Exception.Message)"
+    $eventLogWarning = "[$(Get-Date -Format o)] WARNING: Event log unavailable for source '${eventSource}': $($_.Exception.Message)"
     Write-CollectorLog -Message $eventLogWarning | Out-Null
     Write-Warning $eventLogWarning
 }
