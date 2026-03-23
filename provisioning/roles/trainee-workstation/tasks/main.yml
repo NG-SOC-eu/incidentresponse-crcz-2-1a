@@ -33,7 +33,7 @@
     script: |
       $path = "{{ trainee_workstation_welcome_note.path | default(trainee_workstation_welcome_note.directory ~ '\\' ~ trainee_workstation_welcome_note.filename) }}"
       $content = @'
-{{ trainee_workstation_welcome_note.content }}
+{{ trainee_workstation_welcome_note.content | default('') | indent(6, true) }}
 '@
       Set-Content -Path $path -Value $content -Encoding UTF8
 
