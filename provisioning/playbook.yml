@@ -71,3 +71,11 @@
   #  - name: Run trainee workstation role after explicit facts gathering
   #    ansible.builtin.include_role:
   #      name: trainee-workstation
+
+  - name: set up command logging
+  hosts: all
+  become: yes
+  roles:
+    - role: sandbox-logging
+      slf_destination_port: '{% if hostvars["man"] is defined -%} 514 {%- else -%} 515 {%- endif %}'
+  
